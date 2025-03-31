@@ -31,8 +31,8 @@ inline Vector intersection(Line l1, Line l2)
     const Vector v1 = l1.v;
     const Vector v2 = l2.v;
 
-    const float t1 = (((p2 - p1).cross(v2)).dot(v1.cross(v2))) / std::pow((v1.cross(v2)).magnitude(), 2);
-    const float t2 = -(((p2 - p1).cross(v1)).dot(v2.cross(v1))) / std::pow((v2.cross(v1)).magnitude(), 2);
+    const float t1 = (((p2 - p1).cross(v2)).dot(v1.cross(v2))) / std::pow((v1.cross(v2)).length(), 2);
+    const float t2 = -(((p2 - p1).cross(v1)).dot(v2.cross(v1))) / std::pow((v2.cross(v1)).length(), 2);
 
     if (p1 + v1 * t1 == p2 + v2 * t2)
         return p1 + v1 * t1;
@@ -107,36 +107,9 @@ inline std::pair<Vector, Vector> intersection(Sphere s, Line l)
     return std::make_pair<Vector, Vector>(Vector(p1), Vector(p2));
 }
 
-inline Vector intersection(const Sphere& sphere, const Ray& ray)
+static float radians(const float degrees)
 {
-    Vector originCenter = ray.origin - sphere.center;
-    float a = ray.direction.lengthSquared();
-    float b = 2.0f * ray.direction.dot(originCenter);
-    float c = originCenter.lengthSquared() - sphere.radius * sphere.radius;
-
-    float discriminant = b * b - 4.0f * a * c;
-
-    if (discriminant < 0.0f) {
-        return Vector::invalid(); // No intersection
-    }
-
-    // Compute both possible intersection distances
-    float sqrtDiscriminant = std::sqrt(discriminant);
-    float a2 = 2.0f * a;
-    float root1 = (-b - sqrtDiscriminant) / a2;
-    float root2 = (-b + sqrtDiscriminant) / a2;
-
-    // Ensure t1 is the smaller value
-    if (root1 > root2) std::swap(root1, root2);
-
-    // If both intersections are behind the ray origin, return false
-    if (root2 < 0) Vector::invalid();
-
-    // Choose the closest valid intersection
-    float t = root1 >= 0 ? root1 : root2; // If t1 is negative, use t2 (ray starts inside sphere)
-
-    // Compute intersection point
-    return ray.origin + ray.direction * t;
+    return degrees * (PI / 180.0f);
 }
 
 inline Vector intersection(Ray l1, Ray l2)
@@ -146,8 +119,8 @@ inline Vector intersection(Ray l1, Ray l2)
     const Vector v1 = l1.direction;
     const Vector v2 = l2.direction;
 
-    const float t1 = (((p2 - p1).cross(v2)).dot(v1.cross(v2))) / std::pow((v1.cross(v2)).magnitude(), 2);
-    const float t2 = -(((p2 - p1).cross(v1)).dot(v2.cross(v1))) / std::pow((v2.cross(v1)).magnitude(), 2);
+    const float t1 = (((p2 - p1).cross(v2)).dot(v1.cross(v2))) / std::pow((v1.cross(v2)).length(), 2);
+    const float t2 = -(((p2 - p1).cross(v1)).dot(v2.cross(v1))) / std::pow((v2.cross(v1)).length(), 2);
 
     if (t1 < 0 || t1 > 1 || t2 < 0 || t2 > 1)
         return Vector::invalid();
@@ -164,7 +137,7 @@ inline Line intersection(Plane p1, Plane p2)
         return Line(p1.p, (Vector(0, 1, 0).cross(p1.normal)));
 
     Vector direction = p1.normal.cross(p2.normal);
-    float det = direction.magnitude() * direction.magnitude();
+    float det = direction.length() * direction.length();
 
     if (det == 0.0f)
         return Line({ 0,0,0 }, Vector::invalid());

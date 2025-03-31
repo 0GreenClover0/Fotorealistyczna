@@ -15,6 +15,13 @@ std::string Vector::toString() const
     return s.str();
 }
 
+std::string Vector::toColorString() const
+{
+    return std::to_string(static_cast<int>(255.999f * x)) + " "
+        + std::to_string(static_cast<int>(255.999f * y)) + " "
+        + std::to_string(static_cast<int>(255.999f * z)) + '\n';
+}
+
 Vector Vector::operator+(const Vector& v) const
 {
     return { x + v.x, y + v.y, z + v.z };
@@ -60,9 +67,9 @@ Vector Vector::cross(Vector v) const
     return { y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x };
 }
 
-Vector Vector::normalized() const
+Vector Vector::normalize() const
 {
-    return *this / magnitude();
+    return *this / length();
 }
 
 float Vector::lengthSquared() const
@@ -70,17 +77,22 @@ float Vector::lengthSquared() const
     return x * x + y * y + z * z;
 }
 
-float Vector::magnitude() const
+float Vector::length() const
 {
     return sqrt(lengthSquared());
 }
 
 float Vector::angle(Vector v) const
 {
-    return acos(dot(v) / (magnitude() * v.magnitude()));
+    return acos(dot(v) / (length() * v.length()));
 }
 
 Vector Vector::invalid()
 {
     return { NAN, NAN, NAN };
+}
+
+bool Vector::isInvalid() const
+{
+    return isnan(x) || isnan(y) || isnan(z);
 }

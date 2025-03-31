@@ -13,7 +13,7 @@ public:
         c = vertex3;
 
         // Winding order
-        normal = (b - a).cross(c - a).normalized();
+        normal = (b - a).cross(c - a).normalize();
         // normal = (c - a).cross(b - a).normalized();
     }
 

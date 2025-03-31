@@ -78,7 +78,7 @@ bool Quaternion::operator==(const Quaternion& q) const
 
 Vector Quaternion::rotate(const Vector& point, const Vector& axis, float angle)
 {
-    const Vector result_vector = axis.normalized() * std::sin(angle / 2.0f);
+    const Vector result_vector = axis.normalize() * std::sin(angle / 2.0f);
     const float result_w = std::cos(angle / 2.0f);
     Quaternion q = Quaternion(result_vector.x, result_vector.y, result_vector.z, result_w);
     Quaternion q_inverted = Quaternion(-result_vector.x, -result_vector.y, -result_vector.z, result_w);
