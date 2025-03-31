@@ -1,10 +1,11 @@
 #pragma once
+
+#include "Hittable.h"
 #include "Vector.h"
 
-class Triangle
+class Triangle : public Hittable
 {
 public:
-
     Triangle(Vector vertex1, Vector vertex2, Vector vertex3)
     {
         a = vertex1;
@@ -15,6 +16,8 @@ public:
         normal = (b - a).cross(c - a).normalized();
         // normal = (c - a).cross(b - a).normalized();
     }
+
+    virtual Vector hit(const Ray& ray) override;
 
     Vector a = { 0.0f, 0.0f, 0.0f };
     Vector b = { 0.0f, 0.0f, 0.0f };

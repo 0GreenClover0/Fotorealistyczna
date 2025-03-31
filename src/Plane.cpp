@@ -19,3 +19,8 @@ Plane::Plane(float a, float b, float c, float d)
     if (floatNearlyEqual(this->normal.angle({ 0,1,0 }) * 180 / PI, 0))
         p = { -d / a, 0, 0 };
 }
+
+Vector Plane::hit(const Ray& ray)
+{
+    return Vector::invalid();
+}
