@@ -140,7 +140,6 @@ sdl2-config
 sdl2.pc
 *.db
 *.ipch
-*.sln
 *.filters
 *.lock
 .vs/
