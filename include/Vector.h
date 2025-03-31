@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <string>
 
 struct Vector
@@ -40,4 +41,12 @@ struct Vector
 inline Vector operator*(float lhs, const Vector& rhs)
 {
     return rhs * lhs;
+}
+
+static float randomFloat(float const min, float const max)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(min, max);
+    return dis(gen);
 }

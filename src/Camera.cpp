@@ -2,20 +2,6 @@
 
 #include "MathHelpers.h"
 
-void Camera::render(const std::shared_ptr<Hittable>& root)
-{
-    initialize();
-
-    for (int y = 0; y < bitmap->height; y++)
-    {
-        for (int x = 0; x < bitmap->width; x++)
-        {
-            Ray ray = getRay(x, y);
-            bitmap->data[y][x] = rayGetColor(ray, maxDepth, root);
-        }
-    }
-}
-
 void Camera::render(const std::shared_ptr<HittableList>& world)
 {
     initialize();
@@ -24,8 +10,15 @@ void Camera::render(const std::shared_ptr<HittableList>& world)
     {
         for (int x = 0; x < bitmap->width; x++)
         {
-            Ray ray = getRay(x, y);
-            bitmap->data[y][x] = rayGetColor(ray, maxDepth, world);
+            Vector pixelColor = {};
+
+            for (int i = 0; i < samplesPerPixel; i++)
+            {
+                Ray ray = getRay(x, y);
+                pixelColor = pixelColor + rayGetColor(ray, maxDepth, world);
+            }
+
+            bitmap->data[y][x] = pixelSamplesScale * pixelColor;
         }
     }
 }
@@ -55,17 +48,6 @@ void Camera::initialize()
     pixel00Location = viewportUpperLeft + 0.5f * (pixelDeltaU + pixelDeltaV);
 }
 
-Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hittable>& root) const
-{
-    if (root->hit(ray).isInvalid())
-    {
-        return backgroundColor;
-    }
-
-    // TODO: Hit should give us appropriate color instead (or a pointer to the material, and then the material has the color() function)
-    return Vector(255.0f, 0.0f, 0.0f);
-}
-
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
     if (world->hit(ray).isInvalid())
@@ -74,7 +56,7 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
     }
 
     // TODO: Hit should give us appropriate color instead (or a pointer to the material, and then the material has the color() function)
-    return Vector(255.0f, 0.0f, 0.0f);
+    return Vector(1.0f, 0.0f, 0.0f);
 }
 
 Ray Camera::getRay(int x, int y) const
@@ -85,10 +67,15 @@ Ray Camera::getRay(int x, int y) const
     }
     else
     {
-        Vector offset = Vector(); // Antyaliasing ex. sample_square();
+        Vector offset = sampleSquare(); // Antyaliasing ex. sample_square();
         Vector pixel_sample = pixel00Location + (static_cast<float>(x) + offset.x) * pixelDeltaU + (static_cast<float>(y) + offset.y) * pixelDeltaV;
         Vector ray_origin = center;
         Vector ray_direction = pixel_sample - ray_origin;
         return Ray(ray_origin, ray_direction);
     }
+}
+
+Vector Camera::sampleSquare() const
+{
+    return { randomFloat(0.0f, 1.0f) - 0.5f, randomFloat(0.0f, 1.0f) - 0.5f, 0.0f };
 }

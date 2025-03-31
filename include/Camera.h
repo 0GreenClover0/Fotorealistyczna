@@ -28,15 +28,13 @@ public:
         aspectRatio = static_cast<float>(imageWidth) / static_cast<float>(imageHeight);
     }
 
-    void render(const std::shared_ptr<Hittable>& root);
     void render(const std::shared_ptr<HittableList>& world);
 
 private:
     void initialize();
-    Vector rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hittable>& root) const;
     Vector rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const;
     Ray getRay(int x, int y) const;
-    // Vec3 sample_square() const;
+    Vector sampleSquare() const;
 
     float aspectRatio = 0.0f;
     int imageWidth = 0;

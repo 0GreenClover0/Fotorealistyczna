@@ -7,7 +7,7 @@
 int main()
 {
     std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(100, 100);
-    Camera camera = Camera(bitmap, 1, 1);
+    Camera camera = Camera(bitmap, 50, 1);
     std::shared_ptr<HittableList> world = std::make_shared<HittableList>();
 
     camera.verticalFov = 20.0f;
@@ -20,7 +20,6 @@ int main()
     world->addToWorld(sphere1);
     world->addToWorld(sphere2);
 
-    // camera.render(sphere);
     camera.render(world);
 
     std::ofstream output("output.ppm");
