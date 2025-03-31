@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Bitmap.cpp" />
     <ClCompile Include="..\src\Line.cpp" />
     <ClCompile Include="..\src\Ray.cpp" />
     <ClCompile Include="..\src\Matrix.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Bitmap.h" />
     <ClInclude Include="..\include\Line.h" />
     <ClInclude Include="..\include\Ray.h" />
     <ClInclude Include="..\include\MathHelpers.h" />
