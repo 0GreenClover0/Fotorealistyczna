@@ -20,3 +20,8 @@ Vector HittableList::hit(const Ray& ray)
 
     return hitResult;
 }
+
+void HittableList::addToWorld(std::shared_ptr<Hittable> const& hittable)
+{
+    hittables.push_back(hittable);
+}
