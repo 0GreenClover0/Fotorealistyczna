@@ -16,6 +16,20 @@ void Camera::render(const std::shared_ptr<Hittable>& root)
     }
 }
 
+void Camera::render(const std::shared_ptr<HittableList>& world)
+{
+    initialize();
+
+    for (int y = 0; y < bitmap->height; y++)
+    {
+        for (int x = 0; x < bitmap->width; x++)
+        {
+            Ray ray = getRay(x, y);
+            bitmap->data[y][x] = rayGetColor(ray, maxDepth, world);
+        }
+    }
+}
+
 void Camera::initialize()
 {
     pixelSamplesScale = 1.0f / static_cast<float>(samplesPerPixel);
@@ -44,6 +58,17 @@ void Camera::initialize()
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hittable>& root) const
 {
     if (root->hit(ray).isInvalid())
+    {
+        return backgroundColor;
+    }
+
+    // TODO: Hit should give us appropriate color instead (or a pointer to the material, and then the material has the color() function)
+    return Vector(255.0f, 0.0f, 0.0f);
+}
+
+Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
+{
+    if (world->hit(ray).isInvalid())
     {
         return backgroundColor;
     }

@@ -135,7 +135,9 @@
     <ClCompile Include="..\src\Bitmap.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Hittable.cpp" />
+    <ClCompile Include="..\src\HittableList.cpp" />
     <ClCompile Include="..\src\Line.cpp" />
+    <ClCompile Include="..\src\Quaternion.cpp" />
     <ClCompile Include="..\src\Ray.cpp" />
     <ClCompile Include="..\src\Matrix.cpp" />
     <ClCompile Include="..\src\Plane.cpp" />
@@ -143,13 +145,14 @@
     <ClCompile Include="..\src\Triangle.cpp" />
     <ClCompile Include="..\src\Vector.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Bitmap.h" />
     <ClCompile Include="..\include\Camera.h" />
     <ClCompile Include="..\include\Hittable.h" />
+    <ClInclude Include="..\include\HittableList.h" />
     <ClInclude Include="..\include\Line.h" />
+    <ClInclude Include="..\include\Quaternion.h" />
     <ClInclude Include="..\include\Ray.h" />
     <ClInclude Include="..\include\MathHelpers.h" />
     <ClInclude Include="..\include\Matrix.h" />
@@ -157,7 +160,6 @@
     <ClInclude Include="..\include\Sphere.h" />
     <ClInclude Include="..\include\Triangle.h" />
     <ClInclude Include="..\include\Vector.h" />
-    <ClInclude Include="Quaternion.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
