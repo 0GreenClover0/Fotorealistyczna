@@ -63,7 +63,11 @@ Ray Camera::getRay(int x, int y) const
 {
     if (isOrthographic)
     {
-        // TODO: Ortographic ray
+        Vector offset = sampleSquare();
+        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + offset.x) * pixelDeltaU + (static_cast<float>(y) + offset.y) * pixelDeltaV;
+        Vector ray_origin = pixel_sample;
+        Vector ray_direction = lookAt - lookFrom;
+        return Ray(ray_origin, ray_direction);
     }
     else
     {
