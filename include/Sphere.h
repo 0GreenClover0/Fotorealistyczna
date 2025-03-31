@@ -7,6 +7,6 @@ class Sphere
 public:
     Sphere(const Vector& p, float radius);
 
-    Vector point;
+    Vector center;
     float radius;
 };

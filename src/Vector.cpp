@@ -1,8 +1,9 @@
 #include "Vector.h"
-#define PI 3.14159265f
-#include <sstream>
+
 #include "MathHelpers.h"
+
 #include <cmath>
+#include <sstream>
 
 std::string Vector::toString() const
 {
@@ -24,7 +25,7 @@ Vector Vector::operator-(const Vector& v) const
     return { x - v.x, y - v.y, z - v.z };
 }
 
-bool Vector::operator==(const Vector& v)
+bool Vector::operator==(const Vector& v) const
 {
     return floatNearlyEqual(x, v.x) && floatNearlyEqual(y, v.y) && floatNearlyEqual(z, v.z);
 }
@@ -39,7 +40,7 @@ Vector Vector::operator/(float f) const
     return { x / f, y / f, z / f };
 }
 
-Vector Vector::operator!()
+Vector Vector::operator!() const
 {
     return negative();
 }
@@ -61,13 +62,12 @@ Vector Vector::cross(Vector v) const
 
 Vector Vector::normalized() const
 {
-    Vector vector = { x, y, z };
-    return vector / magnitude();
+    return *this / magnitude();
 }
 
 float Vector::lengthSquared() const
 {
-    return powf(x, 2) + powf(y, 2) + powf(z, 2);
+    return x * x + y * y + z * z;
 }
 
 float Vector::magnitude() const

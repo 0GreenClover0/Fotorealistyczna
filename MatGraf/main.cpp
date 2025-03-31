@@ -38,27 +38,28 @@ int main()
     {
         Vector sphere_center = { 0.0f, 0.0f, 0.0f };
         Sphere s = { sphere_center, 10.0f };
-        Vector ray_start = { 0.0f, 0.0f, 20.0f };
-        Ray r1 = { sphere_center, sphere_center - ray_start };
-        Ray r2 = { sphere_center, Vector(0.0f, 1.0f, 0.0f) };
+        Vector ray_start = { 0.0f, 0.0f, -20.0f };
+        Ray r1 = { ray_start, sphere_center - ray_start };
+        Ray r2 = { ray_start, Vector(0.0f, 1.0f, 0.0f) };
 
         Vector r3_start = { -10.0f, 0.0f, 10.0f };
-        Ray r3 = { sphere_center, {0.0f, 0.0f, 1.0f} };
+        Ray r3 = { r3_start, {0.0f, 0.0f, 1.0f} };
 
-        auto pair1 = intersection(s, r1);
-        auto pair2 = intersection(s, r2);
-        auto pair3 = intersection(s, r3);
+        Vector sphereIntersection1 = intersection(s, r1);
+        Vector sphereIntersection2 = intersection(s, r2);
+        std::cout << "TEST\n";
+        Vector sphereIntersection3 = intersection(s, r3);
 
-        std::cout << "R1 intersects with sphere S at: " + pair1.first.toString() + ", " + pair1.second.toString() << std::endl;
-        std::cout << "R2 intersects with sphere S at: " + pair2.first.toString() + ", " + pair2.second.toString() + " // no intersection" << std::endl;
-        std::cout << "R3 intersects with sphere S at: " + pair3.first.toString() + ", " + pair3.second.toString() + " // identical vectors, one intersection" << std::endl;
+        std::cout << "R1 intersects with sphere S at: " + sphereIntersection1.toString() << '\n';
+        std::cout << "R2 intersects with sphere S at: " + sphereIntersection2.toString() + " // no intersection" << '\n';
+        std::cout << "R3 intersects with sphere S at: " + sphereIntersection3.toString() + " // identical intersections" << '\n';
 
         Vector normal = Vector(0.0f, 1.0f, 1.0f).normalized();
         Plane p({ 0.0f, 0.0f, 0.0f }, normal);
 
         Vector v = intersection(r2, p);
 
-        std::cout << "Intersection of plane P and R2: " + v.toString() << std::endl;
+        std::cout << "Intersection of plane P and R2: " + v.toString() << '\n';
     }
 
     // Right-handed system, CCW triangles, as in OpenGL

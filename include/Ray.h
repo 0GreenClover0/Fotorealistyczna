@@ -2,9 +2,11 @@
 
 #include "Line.h"
 
-class Ray : public Line
+class Ray
 {
 public:
-    // p - start, v - end
-    Ray(const Vector& p, const Vector& v) : Line(p, v) {}
+    Ray(const Vector& origin, const Vector& direction) : origin(origin), direction(direction) {}
+
+    Vector origin;
+    Vector direction;
 };

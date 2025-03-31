@@ -1,12 +1,16 @@
 #pragma once
-#include <iostream>
-#define PI 3.14159265f
+
+#define PI 3.14159265359f
+
 #include "Line.h"
 #include "Plane.h"
 #include "Ray.h"
 #include "Vector.h"
 #include "Sphere.h"
 #include "Triangle.h"
+
+#include <cmath>
+#include <iostream>
 
 enum Axis
 {
@@ -43,20 +47,29 @@ inline float angleBetween(Line l1, Line l2)
     return v1.angle(v2);
 }
 
-inline Vector intersection(Line l, Plane p)
+inline Vector intersection(const Ray& ray, const Plane& plane)
 {
-    Vector n = p.normal;
-    Vector p0 = l.p;
-    Vector q0 = p.p;
-    Vector v = l.v;
+    Vector normal = plane.normal;
+    Vector ray_origin = ray.origin;
+    Vector plane_point = plane.p;
+    Vector ray_direction = ray.direction;
 
-    float t = -n.dot(p0 - q0) / n.dot(v);
-    Vector P = p0 + v * t;
+    float denominator = normal.dot(ray_direction);
 
-    if (n.dot(P - q0) == 0)
-        return P;
+    // Check if ray is parallel to the plane
+    if (std::fabs(denominator) < 1e-6f)
+    {
+        return Vector::invalid();
+    }
 
-    return Vector::invalid();
+    float distance = normal.dot(plane_point - ray_origin) / denominator;
+
+    if (distance < 0.0f)
+    {
+        return Vector::invalid();
+    }
+
+    return ray_origin + ray_direction * distance;
 }
 
 inline float angleBetween(Line l, Plane p)
@@ -77,8 +90,8 @@ inline float angleBetween(Line l, Plane p)
 inline std::pair<Vector, Vector> intersection(Sphere s, Line l)
 {
     float a = l.v.dot(l.v);
-    float b = 2.0f * l.v.dot((l.p - s.point));
-    float c = (l.p - s.point).dot(l.p - s.point) - (s.radius * s.radius);
+    float b = 2.0f * l.v.dot((l.p - s.center));
+    float c = (l.p - s.center).dot(l.p - s.center) - (s.radius * s.radius);
 
     float delta = b * b - 4.0f * a * c;
 
@@ -94,55 +107,44 @@ inline std::pair<Vector, Vector> intersection(Sphere s, Line l)
     return std::make_pair<Vector, Vector>(Vector(p1), Vector(p2));
 }
 
-inline std::pair<Vector, Vector> intersection(Sphere s, Ray const& ray)
+inline Vector intersection(const Sphere& sphere, const Ray& ray)
 {
-    float a = ray.v.lengthSquared();
-    float h = ray.v.dot(s.point);
-    float c = s.point.lengthSquared() - s.radius * s.radius;
+    Vector originCenter = ray.origin - sphere.center;
+    float a = ray.direction.lengthSquared();
+    float b = 2.0f * ray.direction.dot(originCenter);
+    float c = originCenter.lengthSquared() - sphere.radius * sphere.radius;
 
-    float discriminant = h * h - a * c;
-    if (floatNearlyEqual(discriminant, 0.0f))
-    {
-        return std::make_pair(Vector::invalid(), Vector::invalid());
+    float discriminant = b * b - 4.0f * a * c;
+
+    if (discriminant < 0.0f) {
+        return Vector::invalid(); // No intersection
     }
 
-    float sqrtd = std::sqrt(discriminant);
+    // Compute both possible intersection distances
+    float sqrtDiscriminant = std::sqrt(discriminant);
+    float a2 = 2.0f * a;
+    float root1 = (-b - sqrtDiscriminant) / a2;
+    float root2 = (-b + sqrtDiscriminant) / a2;
 
-    // Find the nearest root that lies in the acceptable range.
-    float root = (h - sqrtd) / a;
+    // Ensure t1 is the smaller value
+    if (root1 > root2) std::swap(root1, root2);
 
-    if (root < 0.0f)
-    {
-        root = (h + sqrtd) / a;
-        Vector p = ray.p + ray.v * root;
-        return std::make_pair(p, Vector::invalid());
-    }
-    else
-    {
-        root = (h + sqrtd) / a;
+    // If both intersections are behind the ray origin, return false
+    if (root2 < 0) Vector::invalid();
 
-        if (root > 0.0f)
-        {
-            return std::make_pair(Vector::invalid(), Vector::invalid());
-        }
-    }
+    // Choose the closest valid intersection
+    float t = root1 >= 0 ? root1 : root2; // If t1 is negative, use t2 (ray starts inside sphere)
 
-    float root2 = (h - sqrtd) / a;
-    float root3 = (h + sqrtd) / a;
-
-    //Vector p = ray.p + ray.v * root;
-    Vector p2 = ray.p + ray.v * root2;
-    Vector p3 = ray.p + ray.v * root3;
-
-    return std::make_pair(p2, p3);
+    // Compute intersection point
+    return ray.origin + ray.direction * t;
 }
 
 inline Vector intersection(Ray l1, Ray l2)
 {
-    const Vector p1 = l1.p;
-    const Vector p2 = l2.p;
-    const Vector v1 = l1.v;
-    const Vector v2 = l2.v;
+    const Vector p1 = l1.origin;
+    const Vector p2 = l2.origin;
+    const Vector v1 = l1.direction;
+    const Vector v2 = l2.direction;
 
     const float t1 = (((p2 - p1).cross(v2)).dot(v1.cross(v2))) / std::pow((v1.cross(v2)).magnitude(), 2);
     const float t2 = -(((p2 - p1).cross(v1)).dot(v2.cross(v1))) / std::pow((v2.cross(v1)).magnitude(), 2);
@@ -175,19 +177,19 @@ inline Line intersection(Plane p1, Plane p2)
 inline Vector intersection(Ray r, Triangle triangle)
 {
     Vector normal = triangle.normal;
-    float dot = normal.dot(r.v);
+    float dot = normal.dot(r.direction);
 
     // The ray and the triangle are coplanar. We treat it as NO intersection
     if (floatNearlyEqual(dot, 0.0f))
         return Vector::invalid();
 
-    Vector ra = triangle.a - r.p;
+    Vector ra = triangle.a - r.origin;
     float t = triangle.normal.dot(ra) / dot;
 
     if (t < 0.0f && !floatNearlyEqual(dot, 0.0f))
         return Vector::invalid();
 
-    Vector intersectionPoint = r.p + r.v * t;
+    Vector intersectionPoint = r.origin + r.direction * t;
 
     Vector edge0 = triangle.b - triangle.a;
     Vector edge1 = triangle.c - triangle.b;

@@ -1,5 +1,5 @@
 #include "Sphere.h"
 
-Sphere::Sphere(const Vector& p, float radius) : point(p), radius(radius)
+Sphere::Sphere(const Vector& p, float radius) : center(p), radius(radius)
 {
 }
