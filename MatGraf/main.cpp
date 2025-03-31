@@ -9,10 +9,10 @@ int main()
     std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(100, 100);
     Camera camera = Camera(bitmap, 1, 1);
 
-    camera.vertical_fov = 20.0f;
-    camera.look_from = Vector(13.0f, 2.0f, 3.0f);
-    camera.look_at = Vector(0.0f, 0.0f, 0.0f);
-    camera.v_up = Vector(0.0f, 1.0f, 0.0f);
+    camera.verticalFov = 20.0f;
+    camera.lookFrom = Vector(13.0f, 2.0f, 3.0f);
+    camera.lookAt = Vector(0.0f, 0.0f, 0.0f);
+    camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
     std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(Vector(0.0f, 0.0f, 0.0f), 1.0f);
 
