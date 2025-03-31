@@ -30,7 +30,7 @@ int main()
     {
         for (int x = 0; x < bitmap->width; x++)
         {
-            output << bitmap->data[x][y].toColorString();
+            output << bitmap->data[y][x].toColorString();
         }
     }
 
