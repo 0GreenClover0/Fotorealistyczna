@@ -1,5 +1,9 @@
 #include "HittableList.h"
 
+#include <iostream>
+
+#include "MathHelpers.h"
+
 HitResult HittableList::hit(const Ray& ray)
 {
     // TODO: This should be rewritten to HitRecord/HitResult class, implement it later
@@ -10,13 +14,22 @@ HitResult HittableList::hit(const Ray& ray)
     for (auto const& h : hittables)
     {
         HitResult tempHitResult = h->hit(ray);
-        float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
-
-        if (sqDist < hitDistanceSquared)
+        if (!tempHitResult.hitPoint.isInvalid())
         {
-            hitResult.material = h->getMaterial();
-            hitResult.hitPoint = tempHitResult.hitPoint;
-            hitDistanceSquared = sqDist;
+            float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
+
+            if (tempHitResult.material != nullptr && floatNearlyEqual(tempHitResult.material->color.z, 1.0f) && hitResult.material != nullptr && floatNearlyEqual(hitResult.material->color.x, 1.0f)
+                && sqDist < hitDistanceSquared)
+            {
+                std::cout << ray.origin.toString() << " " << sqDist << " " << hitDistanceSquared << "\n";
+            }
+
+            if (sqDist < hitDistanceSquared)
+            {
+                hitResult.material = h->getMaterial();
+                hitResult.hitPoint = tempHitResult.hitPoint;
+                hitDistanceSquared = sqDist;
+            }
         }
     }
 

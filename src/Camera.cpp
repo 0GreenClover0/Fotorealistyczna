@@ -75,7 +75,7 @@ Ray Camera::getRay(int x, int y) const
     }
     else
     {
-        Vector offset = sampleSquare(); // Antyaliasing ex. sample_square();
+        Vector offset = sampleSquare();
         Vector pixel_sample = pixel00Location + (static_cast<float>(x) + offset.x) * pixelDeltaU + (static_cast<float>(y) + offset.y) * pixelDeltaV;
         Vector ray_origin = center;
         Vector ray_direction = pixel_sample - ray_origin;

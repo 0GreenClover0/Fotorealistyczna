@@ -10,7 +10,6 @@ Sphere::Sphere(const Vector& p, float radius, std::shared_ptr<Material> const& m
 HitResult Sphere::hit(const Ray& ray)
 {
     HitResult result;
-    result.material = getMaterial();
 
     Vector originCenter = ray.origin - center;
     float a = ray.direction.lengthSquared();
@@ -35,7 +34,11 @@ HitResult Sphere::hit(const Ray& ray)
     if (root1 > root2) std::swap(root1, root2);
 
     // If both intersections are behind the ray origin, return false
-    if (root2 < 0) Vector::invalid();
+    if (root2 < 0)
+    {
+        result.hitPoint = Vector::invalid();
+        return result;
+    }
 
     // Choose the closest valid intersection
     float root = root1 >= 0 ? root1 : root2; // If root1 is negative, use root2 (ray starts inside sphere)
@@ -43,5 +46,6 @@ HitResult Sphere::hit(const Ray& ray)
     // Compute intersection point
 
     result.hitPoint = ray.origin + ray.direction * root;
+    result.material = getMaterial();
     return result;
 }

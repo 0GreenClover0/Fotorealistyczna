@@ -10,16 +10,16 @@ int main()
     Camera camera = Camera(bitmap, 50, 1);
     std::shared_ptr<HittableList> world = std::make_shared<HittableList>();
 
-    camera.verticalFov = 40.0f;
-    camera.lookFrom = Vector(13.0f, 2.0f, 3.0f);
-    camera.lookAt = Vector(0.0f, 0.0f, 0.0f);
+    camera.verticalFov = 10.0f;
+    camera.lookFrom = Vector(0.0f, 0.0f, 6.0f);
+    camera.lookAt = Vector(0.0f, 0.0f, 2.0f);
     camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
     std::shared_ptr<Material> mat1 = std::make_shared<Material>(Vector(1.0f, 0.0f, 0.0f));
     std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 1.0f));
 
-    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-8.0, -1.0f, 0.0f), 1.0f, mat1);
-    std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(0.0, 0.0f, 0.0f), 1.0f, mat2);
+    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-2.1f, 0.0f, -2.0f), 2.0f, mat1);
+    std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(2.1f, 0.0f, 0.0f), 2.0f, mat2);
     world->addToWorld(sphere1);
     world->addToWorld(sphere2);
 
