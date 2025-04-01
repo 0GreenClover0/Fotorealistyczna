@@ -20,7 +20,7 @@ Plane::Plane(float a, float b, float c, float d)
         p = { -d / a, 0, 0 };
 }
 
-Vector Plane::hit(const Ray& ray)
+HitResult Plane::hit(const Ray& ray)
 {
-    return Vector::invalid();
+    return {};
 }

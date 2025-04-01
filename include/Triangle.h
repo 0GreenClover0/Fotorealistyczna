@@ -17,7 +17,7 @@ public:
         // normal = (c - a).cross(b - a).normalized();
     }
 
-    virtual Vector hit(const Ray& ray) override;
+    virtual HitResult hit(const Ray& ray) override;
 
     Vector a = { 0.0f, 0.0f, 0.0f };
     Vector b = { 0.0f, 0.0f, 0.0f };

@@ -137,6 +137,7 @@
     <ClCompile Include="..\src\Hittable.cpp" />
     <ClCompile Include="..\src\HittableList.cpp" />
     <ClCompile Include="..\src\Line.cpp" />
+    <ClCompile Include="..\src\Material.cpp" />
     <ClCompile Include="..\src\Quaternion.cpp" />
     <ClCompile Include="..\src\Ray.cpp" />
     <ClCompile Include="..\src\Matrix.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="..\include\Hittable.h" />
     <ClInclude Include="..\include\HittableList.h" />
     <ClInclude Include="..\include\Line.h" />
+    <ClInclude Include="..\include\Material.h" />
     <ClInclude Include="..\include\Quaternion.h" />
     <ClInclude Include="..\include\Ray.h" />
     <ClInclude Include="..\include\MathHelpers.h" />

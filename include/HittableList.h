@@ -7,7 +7,7 @@
 class HittableList : public Hittable
 {
 public:
-    virtual Vector hit(const Ray& ray) override;
+    virtual HitResult hit(const Ray& ray) override;
     void addToWorld(std::shared_ptr<Hittable> const& hittable);
 
 private:

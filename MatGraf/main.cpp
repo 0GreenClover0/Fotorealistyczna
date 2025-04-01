@@ -15,8 +15,11 @@ int main()
     camera.lookAt = Vector(0.0f, 0.0f, 0.0f);
     camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
-    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-8.0, -4.0f, 0.0f), 1.0f);
-    std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(0.0, 0.0f, 0.0f), 1.0f);
+    std::shared_ptr<Material> mat1 = std::make_shared<Material>(Vector(1.0f, 0.0f, 0.0f));
+    std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 1.0f));
+
+    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-8.0, -1.0f, 0.0f), 1.0f, mat1);
+    std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(0.0, 0.0f, 0.0f), 1.0f, mat2);
     world->addToWorld(sphere1);
     world->addToWorld(sphere2);
 

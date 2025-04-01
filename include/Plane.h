@@ -10,7 +10,7 @@ public:
     Plane(const Vector& p, const Vector& normal);
     Plane(float a, float b, float c, float d);
 
-    virtual Vector hit(const Ray& ray) override;
+    virtual HitResult hit(const Ray& ray) override;
 
     Vector p = Vector(0, 0, 0);
     Vector normal = Vector(0, 0, 0);

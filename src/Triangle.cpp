@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-Vector Triangle::hit(const Ray& ray)
+HitResult Triangle::hit(const Ray& ray)
 {
-    return Vector::invalid();
+    return {};
 }

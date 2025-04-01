@@ -6,9 +6,9 @@
 class Sphere final : public Hittable
 {
 public:
-    Sphere(const Vector& p, float radius);
+    Sphere(const Vector& p, float radius, std::shared_ptr<Material> const& mat);
 
-    virtual Vector hit(const Ray& ray) override;
+    virtual HitResult hit(const Ray& ray) override;
 
     Vector center;
     float radius;
