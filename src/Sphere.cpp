@@ -44,3 +44,8 @@ void Sphere::hit(const Ray& ray, HitResult& hitResult)
     hitResult.hitPoint = ray.origin + ray.direction * root;
     hitResult.material = getMaterial();
 }
+
+Vector Sphere::getNormal(const Vector& hitPoint) const
+{
+    return (hitPoint - center).normalize();
+}

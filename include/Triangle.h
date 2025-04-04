@@ -18,6 +18,7 @@ public:
     }
 
     virtual void hit(const Ray& ray, HitResult& hitResult) override;
+    virtual Vector getNormal(const Vector& hitPoint) const override;
 
     Vector a = { 0.0f, 0.0f, 0.0f };
     Vector b = { 0.0f, 0.0f, 0.0f };

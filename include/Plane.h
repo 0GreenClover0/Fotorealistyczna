@@ -11,6 +11,7 @@ public:
     Plane(float a, float b, float c, float d);
 
     virtual void hit(const Ray& ray, HitResult& hitResult) override;
+    virtual Vector getNormal(const Vector& hitPoint) const override;
 
     Vector p = Vector(0, 0, 0);
     Vector normal = Vector(0, 0, 0);

@@ -27,6 +27,12 @@ void HittableList::hit(const Ray& ray, HitResult& hitResult)
     }
 }
 
+Vector HittableList::getNormal(const Vector& hitPoint) const
+{
+    // TODO: Implement
+    return {};
+}
+
 void HittableList::addToWorld(std::shared_ptr<Hittable> const& hittable)
 {
     hittables.push_back(hittable);

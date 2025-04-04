@@ -23,3 +23,8 @@ Plane::Plane(float a, float b, float c, float d)
 void Plane::hit(const Ray& ray, HitResult& hitResult)
 {
 }
+
+Vector Plane::getNormal(const Vector& hitPoint) const
+{
+    return {};
+}
