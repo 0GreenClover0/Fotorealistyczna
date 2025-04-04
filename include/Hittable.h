@@ -4,9 +4,11 @@
 #include "Ray.h"
 #include "Vector.h"
 
+class Hittable;
+
 struct HitResult
 {
-    std::shared_ptr<Material> material = {};
+    std::shared_ptr<Hittable> hittable = {};
     Vector hitPoint = {};
 };
 

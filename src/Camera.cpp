@@ -1,5 +1,6 @@
 ﻿#include "Camera.h"
 
+#include "Global.h"
 #include "MathHelpers.h"
 
 void Camera::render(const std::shared_ptr<HittableList>& world)
@@ -66,7 +67,30 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         return backgroundColor;
     }
 
-    Vector const hitColor = hitResult.material->color;
+    Vector lightColor = {1.0f, 1.0f, 1.0f};
+    Vector normal = hitResult.hittable->getNormal(hitResult.hitPoint);
+
+    for (auto const& light : lights)
+    {
+        // Send shadow ray to the light to check if it is occluded
+        HitResult lightResult = {nullptr, Vector::invalid()};
+        Vector lightDirection = (light->position - hitResult.hitPoint).normalize();
+        Ray shadowRay = Ray(hitResult.hitPoint, lightDirection);
+        world->hit(shadowRay, lightResult);
+
+        if (!lightResult.hitPoint.isInvalid())
+        {
+            continue;
+        }
+
+        // Calculate light influence
+        // Blinn-Phong model
+        float diff = std::fmaxf(normal.dot(lightDirection), 0.0f);
+        Vector diffuse = diff * light->color;
+        lightColor = diffuse;
+    }
+
+    Vector const hitColor = ambientColor * lightColor * hitResult.hittable->getMaterial()->color;
 
     return hitColor;
 }

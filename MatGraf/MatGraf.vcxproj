@@ -134,10 +134,13 @@
   <ItemGroup>
     <ClCompile Include="..\src\Bitmap.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
+    <ClCompile Include="..\src\Global.cpp" />
     <ClCompile Include="..\src\Hittable.cpp" />
     <ClCompile Include="..\src\HittableList.cpp" />
+    <ClCompile Include="..\src\Light.cpp" />
     <ClCompile Include="..\src\Line.cpp" />
     <ClCompile Include="..\src\Material.cpp" />
+    <ClCompile Include="..\src\PointLight.cpp" />
     <ClCompile Include="..\src\Quaternion.cpp" />
     <ClCompile Include="..\src\Ray.cpp" />
     <ClCompile Include="..\src\Matrix.cpp" />
@@ -151,9 +154,12 @@
     <ClInclude Include="..\include\Bitmap.h" />
     <ClCompile Include="..\include\Camera.h" />
     <ClCompile Include="..\include\Hittable.h" />
+    <ClInclude Include="..\include\Global.h" />
     <ClInclude Include="..\include\HittableList.h" />
+    <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Line.h" />
     <ClInclude Include="..\include\Material.h" />
+    <ClInclude Include="..\include\PointLight.h" />
     <ClInclude Include="..\include\Quaternion.h" />
     <ClInclude Include="..\include\Ray.h" />
     <ClInclude Include="..\include\MathHelpers.h" />

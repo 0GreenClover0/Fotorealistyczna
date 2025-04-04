@@ -13,16 +13,18 @@ void HittableList::hit(const Ray& ray, HitResult& hitResult)
         HitResult tempHitResult = {nullptr, Vector::invalid()};
         h->hit(ray, tempHitResult);
 
-        if (!tempHitResult.hitPoint.isInvalid())
+        if (tempHitResult.hitPoint.isInvalid())
         {
-            float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
+            continue;
+        }
 
-            if (sqDist < hitDistanceSquared)
-            {
-                hitResult.material = h->getMaterial();
-                hitResult.hitPoint = tempHitResult.hitPoint;
-                hitDistanceSquared = sqDist;
-            }
+        float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
+
+        if (sqDist < hitDistanceSquared)
+        {
+            hitResult.hittable = h;
+            hitResult.hitPoint = tempHitResult.hitPoint;
+            hitDistanceSquared = sqDist;
         }
     }
 }
