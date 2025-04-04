@@ -14,7 +14,8 @@ class Hittable
 {
 public:
     virtual ~Hittable() = default;
-    virtual HitResult hit(const Ray& ray) = 0;
+    virtual void hit(const Ray& ray, HitResult& hitResult) = 0;
+
     std::shared_ptr<Material> getMaterial() const;
 
 protected:

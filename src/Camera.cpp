@@ -58,16 +58,16 @@ void Camera::initialize()
 
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
-    HitResult const result = world->hit(ray);
+    HitResult hitResult = {nullptr, Vector::invalid()};
+    world->hit(ray, hitResult);
 
-    if (result.hitPoint.isInvalid())
+    if (hitResult.hitPoint.isInvalid())
     {
         return backgroundColor;
     }
 
-    Vector const hitColor = result.material->color;
+    Vector const hitColor = hitResult.material->color;
 
-    // TODO: Hit should give us appropriate color instead (or a pointer to the material, and then the material has the color() function)
     return hitColor;
 }
 

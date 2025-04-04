@@ -1,9 +1,10 @@
 #pragma once
+
 #include "Vector.h"
 
 class Material
 {
 public:
-    Material(Vector materialColor) : color(materialColor) {}
+    explicit Material(Vector color) : color(color) {}
     Vector color = {};
 };

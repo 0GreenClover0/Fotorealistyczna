@@ -20,7 +20,6 @@ Plane::Plane(float a, float b, float c, float d)
         p = { -d / a, 0, 0 };
 }
 
-HitResult Plane::hit(const Ray& ray)
+void Plane::hit(const Ray& ray, HitResult& hitResult)
 {
-    return {};
 }

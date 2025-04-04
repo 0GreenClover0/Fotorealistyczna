@@ -4,16 +4,15 @@
 
 #include "MathHelpers.h"
 
-HitResult HittableList::hit(const Ray& ray)
+void HittableList::hit(const Ray& ray, HitResult& hitResult)
 {
-    // TODO: This should be rewritten to HitRecord/HitResult class, implement it later
-    HitResult hitResult = {};
-    hitResult.hitPoint = Vector::invalid();
     float hitDistanceSquared = FLT_MAX;
 
     for (auto const& h : hittables)
     {
-        HitResult tempHitResult = h->hit(ray);
+        HitResult tempHitResult = {nullptr, Vector::invalid()};
+        h->hit(ray, tempHitResult);
+
         if (!tempHitResult.hitPoint.isInvalid())
         {
             float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
@@ -26,8 +25,6 @@ HitResult HittableList::hit(const Ray& ray)
             }
         }
     }
-
-    return hitResult;
 }
 
 void HittableList::addToWorld(std::shared_ptr<Hittable> const& hittable)
