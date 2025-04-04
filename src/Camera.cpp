@@ -44,8 +44,16 @@ void Camera::initialize()
     pixelDeltaU = viewportU / static_cast<float>(imageWidth);
     pixelDeltaV = viewportV / static_cast<float>(imageHeight);
 
-    Vector viewportUpperLeft = center - (focalLength * w) - viewportU / 2.0f - viewportV / 2.0f;
-    pixel00Location = viewportUpperLeft + 0.5f * (pixelDeltaU + pixelDeltaV);
+    if (isOrthographic)
+    {
+        Vector viewportUpperLeft = center - w - viewportU / 2.0f - viewportV / 2.0f;
+        pixel00Location = viewportUpperLeft + 0.5f * (pixelDeltaU + pixelDeltaV);
+    }
+    else
+    {
+        Vector viewportUpperLeft = center - (focalLength * w) - viewportU / 2.0f - viewportV / 2.0f;
+        pixel00Location = viewportUpperLeft + 0.5f * (pixelDeltaU + pixelDeltaV);
+    }
 }
 
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
