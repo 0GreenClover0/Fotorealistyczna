@@ -76,7 +76,7 @@ Ray Camera::getRay(int x, int y) const
     if (isOrthographic)
     {
         Vector offset = sampleSquare();
-        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + offset.x) * pixelDeltaU + (static_cast<float>(y) + offset.y) * pixelDeltaV;
+        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + 0.5f + offset.x) * pixelDeltaU + (static_cast<float>(y) + 0.5f  + offset.y) * pixelDeltaV;
         Vector ray_origin = pixel_sample;
         Vector ray_direction = lookAt - lookFrom;
         return Ray(ray_origin, ray_direction);
@@ -84,7 +84,7 @@ Ray Camera::getRay(int x, int y) const
     else
     {
         Vector offset = sampleSquare();
-        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + offset.x) * pixelDeltaU + (static_cast<float>(y) + offset.y) * pixelDeltaV;
+        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + 0.5f + offset.x) * pixelDeltaU + (static_cast<float>(y) + 0.5f + offset.y) * pixelDeltaV;
         Vector ray_origin = center;
         Vector ray_direction = pixel_sample - ray_origin;
         return Ray(ray_origin, ray_direction);
