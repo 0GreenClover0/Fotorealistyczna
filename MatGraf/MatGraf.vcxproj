@@ -153,6 +153,7 @@
     <ClCompile Include="..\src\Global.cpp" />
     <ClCompile Include="..\src\Hittable.cpp" />
     <ClCompile Include="..\src\HittableList.cpp" />
+    <ClCompile Include="..\src\Interval.cpp" />
     <ClCompile Include="..\src\Light.cpp" />
     <ClCompile Include="..\src\Line.cpp" />
     <ClCompile Include="..\src\Material.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="..\include\Hittable.h" />
     <ClInclude Include="..\include\Global.h" />
     <ClInclude Include="..\include\HittableList.h" />
+    <ClInclude Include="..\include\Interval.h" />
     <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Line.h" />
     <ClInclude Include="..\include\Material.h" />
