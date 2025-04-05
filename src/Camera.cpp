@@ -99,7 +99,7 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
 
         float attenuation = 1.0f / (light->constant + light->linear * distance + light->quadratic * distanceSquared);
 
-        lightColor = (diffuse + specular) * attenuation;
+        lightColor += (diffuse + specular) * attenuation;
     }
 
     Vector hitColor = lightColor + ambientColor;

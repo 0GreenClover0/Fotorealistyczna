@@ -43,6 +43,11 @@ Vector Vector::operator*(const Vector& v) const
     return { x * v.x, y * v.y, z * v.z };
 }
 
+Vector Vector::operator+=(const Vector& vector)
+{
+    return *this = *this + vector;
+}
+
 bool Vector::operator==(const Vector& v) const
 {
     return floatNearlyEqual(x, v.x) && floatNearlyEqual(y, v.y) && floatNearlyEqual(z, v.z);
