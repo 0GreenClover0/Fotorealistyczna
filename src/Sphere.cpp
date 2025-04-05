@@ -47,6 +47,7 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
     // Compute intersection point
 
     hitResult.hitPoint = ray.origin + ray.direction * root;
+    hitResult.t = root;
 }
 
 Vector Sphere::getNormal(const Vector& hitPoint) const

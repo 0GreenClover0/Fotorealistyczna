@@ -6,26 +6,21 @@
 
 void HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
-    float hitDistanceSquared = FLT_MAX;
+    float closestSoFar = rayT.max;
 
     for (auto const& h : hittables)
     {
-        HitResult tempHitResult = {nullptr, Vector::invalid()};
-        h->hit(ray, rayT, tempHitResult);
+        HitResult tempHitResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
+        h->hit(ray, Interval(rayT.min, closestSoFar), tempHitResult);
 
         if (tempHitResult.hitPoint.isInvalid())
         {
             continue;
         }
 
-        float const sqDist = (tempHitResult.hitPoint - ray.origin).lengthSquared();
-
-        if (sqDist < hitDistanceSquared)
-        {
-            hitResult.hittable = h;
-            hitResult.hitPoint = tempHitResult.hitPoint;
-            hitDistanceSquared = sqDist;
-        }
+        hitResult.hittable = h;
+        hitResult.hitPoint = tempHitResult.hitPoint;
+        closestSoFar = tempHitResult.t;
     }
 }
 

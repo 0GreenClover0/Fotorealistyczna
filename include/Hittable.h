@@ -11,6 +11,7 @@ struct HitResult
 {
     std::shared_ptr<Hittable> hittable = {};
     Vector hitPoint = {};
+    float t = {};
 };
 
 class Hittable

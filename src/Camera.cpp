@@ -60,7 +60,7 @@ void Camera::initialize()
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
     Vector viewDirection = -ray.direction;
-    HitResult hitResult = {nullptr, Vector::invalid()};
+    HitResult hitResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
     world->hit(ray, Interval(0.0f, FLT_MAX), hitResult);
 
     if (hitResult.hitPoint.isInvalid())
@@ -74,7 +74,7 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
     for (auto const& light : lights)
     {
         // Send shadow ray to the light to check if it is occluded
-        HitResult lightResult = {nullptr, Vector::invalid()};
+        HitResult lightResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
 
         Vector lightDirection = light->position - hitResult.hitPoint;
         float distanceSquared = lightDirection.lengthSquared();
