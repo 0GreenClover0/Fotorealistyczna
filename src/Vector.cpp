@@ -2,6 +2,7 @@
 
 #include "MathHelpers.h"
 
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -32,6 +33,11 @@ Vector Vector::operator-(const Vector& v) const
     return { x - v.x, y - v.y, z - v.z };
 }
 
+Vector Vector::operator-() const
+{
+    return { -x, -y, -z };
+}
+
 Vector Vector::operator*(const Vector& v) const
 {
     return { x * v.x, y * v.y, z * v.z };
@@ -50,6 +56,11 @@ Vector Vector::operator*(float f) const
 Vector Vector::operator/(float f) const
 {
     return { x / f, y / f, z / f };
+}
+
+Vector Vector::operator/(const Vector& v) const
+{
+    return { x / v.x, y / v.y, z / v.z };
 }
 
 Vector Vector::operator!() const
@@ -95,6 +106,16 @@ float Vector::angle(Vector v) const
 Vector Vector::invalid()
 {
     return { NAN, NAN, NAN };
+}
+
+Vector Vector::reflect(const Vector& incident, const Vector& normal)
+{
+    return incident - 2.0f * normal * incident.dot(normal);
+}
+
+Vector Vector::clamp(const Vector& v, float min, float max)
+{
+    return Vector(std::clamp(v.x, min, max), std::clamp(v.y, min, max), std::clamp(v.z, min, max));
 }
 
 bool Vector::isInvalid() const

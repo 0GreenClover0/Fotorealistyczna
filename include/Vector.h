@@ -23,10 +23,12 @@ struct Vector
 
     Vector operator +(const Vector& v) const;
     Vector operator -(const Vector& v) const;
+    Vector operator -() const;
     Vector operator *(const Vector& v) const;
     bool operator ==(const Vector& v) const;
     Vector operator*(float f) const;
     Vector operator /(float f) const;
+    Vector operator/(const Vector& v) const;
     Vector operator !() const;          // Negation, way #1
     Vector negative() const;      // Negation, way #2
     float dot(Vector v) const;    // Dot product
@@ -36,6 +38,8 @@ struct Vector
     float length() const;      // Returns magnitude, length of the vector
     float angle(Vector v) const;  // Returns angle between this vector and the passed vector - IN RADIANS
     static Vector invalid();      // Marks this vector as invalid if you need
+    static Vector reflect(const Vector& incident, const Vector& normal);
+    static Vector clamp(const Vector& v, float min, float max);
     bool isInvalid() const;
 };
 

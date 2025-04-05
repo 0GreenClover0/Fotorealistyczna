@@ -16,8 +16,8 @@ public:
     Vector lookAt;
     Vector vUp;
 
-    Vector backgroundColor = { 0.7f, 0.8f, 1.0f };
-    Vector ambientColor = { 0.5f, 0.5f, 0.5f };
+    Vector backgroundColor = { 1.4f, 1.6f, 50.0f };
+    Vector ambientColor = { 0.01f, 0.01f, 0.01f };
     bool isOrthographic = false;
 
     Camera(const std::shared_ptr<Bitmap>& bitmap, const int samples_per_pixel, const int max_depth)

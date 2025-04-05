@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-void Triangle::hit(const Ray& ray, HitResult& hitResult)
+void Triangle::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
 }
 

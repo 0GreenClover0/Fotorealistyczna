@@ -59,38 +59,50 @@ void Camera::initialize()
 
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
+    Vector viewDirection = -ray.direction;
     HitResult hitResult = {nullptr, Vector::invalid()};
-    world->hit(ray, hitResult);
+    world->hit(ray, Interval(0.0f, FLT_MAX), hitResult);
 
     if (hitResult.hitPoint.isInvalid())
     {
         return backgroundColor;
     }
 
-    Vector lightColor = {1.0f, 1.0f, 1.0f};
+    Vector lightColor = {0.0f, 0.0f, 0.0f};
     Vector normal = hitResult.hittable->getNormal(hitResult.hitPoint);
 
     for (auto const& light : lights)
     {
         // Send shadow ray to the light to check if it is occluded
         HitResult lightResult = {nullptr, Vector::invalid()};
-        Vector lightDirection = (light->position - hitResult.hitPoint).normalize();
-        Ray shadowRay = Ray(hitResult.hitPoint, lightDirection);
-        world->hit(shadowRay, lightResult);
+
+        Vector lightDirection = light->position - hitResult.hitPoint;
+        float distanceSquared = lightDirection.lengthSquared();
+        float distance = std::sqrt(distanceSquared);
+        lightDirection = lightDirection.normalize();
+
+        Ray shadowRay = Ray(hitResult.hitPoint + lightDirection * 0.0001f, lightDirection);
+        world->hit(shadowRay, Interval(0.0f, distance), lightResult);
 
         if (!lightResult.hitPoint.isInvalid())
         {
             continue;
         }
 
-        // Calculate light influence
-        // Blinn-Phong model
-        float diff = std::fmaxf(normal.dot(lightDirection), 0.0f);
-        Vector diffuse = diff * light->color;
-        lightColor = diffuse;
+        // Calculate light influence, Phong model
+        float diff = std::fmax(normal.dot(lightDirection), 0.0f);
+        Vector diffuse = diff * light->diffuse * hitResult.hittable->getMaterial()->color;
+
+        Vector reflection = Vector::reflect(-lightDirection, normal);
+        float spec = std::powf(std::fmax(viewDirection.dot(reflection), 0.0f), hitResult.hittable->getMaterial()->shininess);
+        Vector specular = spec * light->specular;
+
+        float attenuation = 1.0f / (light->constant + light->linear * distance + light->quadratic * distanceSquared);
+
+        lightColor = (diffuse + specular) * attenuation;
     }
 
-    Vector const hitColor = ambientColor * lightColor * hitResult.hittable->getMaterial()->color;
+    Vector hitColor = lightColor + ambientColor;
 
     return hitColor;
 }

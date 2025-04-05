@@ -7,7 +7,7 @@ Sphere::Sphere(const Vector& p, float radius, std::shared_ptr<Material> const& m
     material = mat;
 }
 
-void Sphere::hit(const Ray& ray, HitResult& hitResult)
+void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
     Vector originCenter = ray.origin - center;
     float a = ray.direction.lengthSquared();
@@ -26,6 +26,11 @@ void Sphere::hit(const Ray& ray, HitResult& hitResult)
     float a2 = 2.0f * a;
     float root1 = (-b - sqrtDiscriminant) / a2;
     float root2 = (-b + sqrtDiscriminant) / a2;
+
+    if (!rayT.surrounds(root1) && !rayT.surrounds(root2))
+    {
+        return;
+    }
 
     // Ensure t1 is the smaller value
     if (root1 > root2) std::swap(root1, root2);

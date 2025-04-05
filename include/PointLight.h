@@ -6,7 +6,7 @@
 class PointLight : public Light
 {
 public:
-    PointLight(const Vector& position, const Vector& color, const float intensity);
+    PointLight(const Vector& position, const Vector& diffuse, const Vector& specular);
 
     Vector getColor(const Ray& rayIn);
 };

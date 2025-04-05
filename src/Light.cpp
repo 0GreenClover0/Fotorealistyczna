@@ -1,5 +1,5 @@
 ﻿#include "Light.h"
 
-Light::Light(const Vector& position, const Vector& color, const float intensity) : position(position), color(color), intensity(intensity)
+Light::Light(const Vector& position, const Vector& diffuse, const Vector& specular) : position(position), diffuse(diffuse), specular(specular)
 {
 }

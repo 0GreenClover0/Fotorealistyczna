@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Interval.h"
 #include "Material.h"
 #include "Ray.h"
 #include "Vector.h"
@@ -16,7 +17,7 @@ class Hittable
 {
 public:
     virtual ~Hittable() = default;
-    virtual void hit(const Ray& ray, HitResult& hitResult) = 0;
+    virtual void hit(const Ray& ray, Interval rayT, HitResult& hitResult) = 0;
     virtual Vector getNormal(const Vector& hitPoint) const = 0;
 
     std::shared_ptr<Material> getMaterial() const;

@@ -4,9 +4,13 @@
 class Light
 {
 public:
-    Light(const Vector& position, const Vector& color, const float intensity);
+    Light(const Vector& position, const Vector& diffuse, const Vector& specular);
 
-    Vector position;
-    Vector color;
-    float intensity;
+    Vector position = {};
+    Vector diffuse = {};
+    Vector specular = {};
+
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 };

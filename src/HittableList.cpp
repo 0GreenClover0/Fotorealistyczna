@@ -4,14 +4,14 @@
 
 #include "MathHelpers.h"
 
-void HittableList::hit(const Ray& ray, HitResult& hitResult)
+void HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
     float hitDistanceSquared = FLT_MAX;
 
     for (auto const& h : hittables)
     {
         HitResult tempHitResult = {nullptr, Vector::invalid()};
-        h->hit(ray, tempHitResult);
+        h->hit(ray, rayT, tempHitResult);
 
         if (tempHitResult.hitPoint.isInvalid())
         {
