@@ -33,11 +33,23 @@ int main()
     std::ofstream output("output.ppm");
     output << "P3\n" << bitmap->width << " " << bitmap->height << "\n255\n";
 
+    Vector one = Vector(1.0f, 1.0f, 1.0f);
+
     for (int y = 0; y < bitmap->height; y++)
     {
         for (int x = 0; x < bitmap->width; x++)
         {
-            output << bitmap->data[y][x].toColorString();
+            // Reinhard tone mapping
+            const Vector mappedColor = bitmap->data[y][x] / (bitmap->data[y][x] + one);
+
+            // Gamma Correction
+            const Vector gammaCorrected = Vector(
+                std::powf(mappedColor.x, 1.0f / 2.2f),
+                std::powf(mappedColor.y, 1.0f / 2.2f),
+                std::powf(mappedColor.z, 1.0f / 2.2f)
+            );
+
+            output << Vector::clamp(gammaCorrected, 0.0f, 1.0f).toColorString();
         }
     }
 
