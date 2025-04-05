@@ -93,8 +93,8 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         float diff = std::fmax(normal.dot(lightDirection), 0.0f);
         Vector diffuse = diff * light->diffuse * hitResult.hittable->getMaterial()->color;
 
-        Vector reflection = Vector::reflect(-lightDirection, normal);
-        float spec = std::powf(std::fmax(viewDirection.dot(reflection), 0.0f), hitResult.hittable->getMaterial()->shininess);
+        Vector halfwayDirection = (lightDirection + viewDirection).normalize();
+        float spec = std::powf(std::fmax(normal.dot(halfwayDirection), 0.0f), hitResult.hittable->getMaterial()->shininess);
         Vector specular = spec * light->specular;
 
         float attenuation = 1.0f / (light->constant + light->linear * distance + light->quadratic * distanceSquared);

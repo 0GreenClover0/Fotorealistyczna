@@ -18,7 +18,7 @@ int main()
     camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
     std::shared_ptr<Material> mat1 = std::make_shared<Material>(Vector(0.2f, 0.0f, 0.0f));
-    std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 0.2f), 0.1f);
+    std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 0.2f), 16.0f);
 
     std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-2.0f, 0.0f, -3.0f), 4.0f, mat1);
     std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(2.0f, 0.0f, 0.0f), 4.0f, mat2);
