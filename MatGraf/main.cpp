@@ -6,8 +6,8 @@
 #include "Plane.h"
 #include "PointLight.h"
 #include "Sphere.h"
-// #include <Windows.h>
-// #pragma comment(lib, "shell32.lib")
+#include <Windows.h>
+#pragma comment(lib, "shell32.lib")
 
 int main()
 {
@@ -73,7 +73,7 @@ int main()
     }
 
     output.close();
-    // ShellExecuteW(nullptr, L"open", L"output.ppm", nullptr, L".", SW_SHOW);
+    ShellExecuteW(nullptr, L"open", L"output.ppm", nullptr, L".", SW_SHOW);
 
     std::cout << "Done\n";
 }
