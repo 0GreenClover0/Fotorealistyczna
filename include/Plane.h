@@ -7,8 +7,7 @@ class Plane : public Hittable
 {
 public:
     // Plane and normal
-    Plane(const Vector& p, const Vector& normal);
-    Plane(float a, float b, float c, float d);
+    Plane(const Vector& p, const Vector& normal, std::shared_ptr<Material> const& mat);
 
     virtual void hit(const Ray& ray, Interval rayT, HitResult& hitResult) override;
     virtual Vector getNormal(const Vector& hitPoint) const override;
