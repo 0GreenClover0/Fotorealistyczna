@@ -60,7 +60,7 @@ void Camera::initialize()
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
     Vector viewDirection = -ray.direction;
-    HitResult hitResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
+    HitResult hitResult = { .hittable = nullptr, .hitPoint = Vector::invalid(), .t = 0.0f };
     world->hit(ray, Interval(0.0f, FLT_MAX), hitResult);
 
     if (hitResult.hitPoint.isInvalid())
@@ -68,13 +68,26 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         return backgroundColor;
     }
 
-    Vector lightColor = {0.0f, 0.0f, 0.0f};
+    if (depth <= 0)
+    {
+        return { 0.0f, 0.0f, 0.0f };
+    }
+
+    if (hitResult.hittable->getMaterial()->materialType == MaterialType::Reflective)
+    {
+        Vector const normal = hitResult.hittable->getNormal(hitResult.hitPoint);
+        Vector const newDirection = ray.direction - 2.0f * normal * normal.dot(ray.direction);
+        Ray const reflectedRay = { hitResult.hitPoint + normal * 0.0001f, newDirection };
+        return rayGetColor(reflectedRay, depth - 1, world);
+    }
+
+    Vector lightColor = { 0.0f, 0.0f, 0.0f };
     Vector normal = hitResult.hittable->getNormal(hitResult.hitPoint);
 
     for (auto const& light : lights)
     {
         // Send shadow ray to the light to check if it is occluded
-        HitResult lightResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
+        HitResult lightResult = { .hittable = nullptr, .hitPoint = Vector::invalid(), .t = 0.0f };
 
         Vector lightDirection = light->position - hitResult.hitPoint;
         float distanceSquared = lightDirection.lengthSquared();
@@ -112,7 +125,7 @@ Ray Camera::getRay(int x, int y) const
     if (isOrthographic)
     {
         Vector offset = sampleSquare();
-        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + 0.5f + offset.x) * pixelDeltaU + (static_cast<float>(y) + 0.5f  + offset.y) * pixelDeltaV;
+        Vector pixel_sample = pixel00Location + (static_cast<float>(x) + 0.5f + offset.x) * pixelDeltaU + (static_cast<float>(y) + 0.5f + offset.y) * pixelDeltaV;
         Vector ray_origin = pixel_sample;
         Vector ray_direction = (lookAt - lookFrom).normalize();
         return Ray(ray_origin, ray_direction);
