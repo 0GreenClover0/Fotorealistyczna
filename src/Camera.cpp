@@ -81,6 +81,52 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         return rayGetColor(reflectedRay, depth - 1, world);
     }
 
+    // if (hitResult.hittable->getMaterial()->materialType == MaterialType::Refractive)
+    // {
+    //     Vector const normal = hitResult.hittable->getNormal(hitResult.hitPoint);
+    //     Vector const unitDir = ray.direction.normalize();
+    //
+    //     bool entering = unitDir.dot(normal) < 0.0f;
+    //     Vector n = entering ? normal : normal.negative();
+    //
+    //     float etai = entering ? 1.0f : ray.currentMaterial->ior;
+    //     float etat = entering ? ray.currentMaterial->ior : 1.0f;
+    //     float eta = etai / etat;
+    //
+    //     float cos_theta = std::fmin(unitDir.negative().dot(n), 1.0f);
+    //
+    //     Vector r_out_perp = eta * (unitDir + cos_theta * n);
+    //     Vector r_out_parallel = -std::sqrt(std::fabs(1.0f - r_out_perp.lengthSquared())) * n;
+    //     Vector refracted = r_out_perp + r_out_parallel;
+    //
+    //     Ray refractedRay = {
+    //         hitResult.hitPoint - n * 0.0001f,
+    //         refracted.normalize(),
+    //         hitResult.hittable->getMaterial()
+    //     };
+    //
+    //     return rayGetColor(refractedRay, depth - 1, world);
+    // }
+
+    if (hitResult.hittable->getMaterial()->materialType == MaterialType::Refractive)
+    {
+        Vector const n = hitResult.hittable->getNormal(hitResult.hitPoint);
+
+        float cos_theta = -ray.direction.negative().dot(n);
+        float refr_ratio = 1.0f / hitResult.hittable->getMaterial()->ior;
+        float k = 1.0f - refr_ratio * refr_ratio * (1.0f - cos_theta * cos_theta);
+
+        Vector refractedDir = ray.direction * refr_ratio + (refr_ratio * cos_theta - sqrt(k)) * n;
+
+        Ray refractedRay = {
+                    hitResult.hitPoint + refractedDir * 0.0001f,
+                    refractedDir,
+                    hitResult.hittable->getMaterial()
+        };
+
+        return rayGetColor(refractedRay, depth - 1, world);
+    }
+
     Vector lightColor = { 0.0f, 0.0f, 0.0f };
     Vector normal = hitResult.hittable->getNormal(hitResult.hitPoint);
 

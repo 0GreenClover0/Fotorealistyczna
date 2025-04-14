@@ -112,6 +112,11 @@ static float radians(const float degrees)
     return degrees * (PI / 180.0f);
 }
 
+static float degrees(const float radians)
+{
+    return radians * (180.0f / PI);
+}
+
 inline Vector intersection(Ray l1, Ray l2)
 {
     const Vector p1 = l1.origin;
