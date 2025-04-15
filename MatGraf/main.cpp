@@ -11,8 +11,8 @@
 
 int main()
 {
-    std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(900, 900);
-    Camera camera = Camera(bitmap, 16, 32);
+    std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(500, 500);
+    Camera camera = Camera(bitmap, 1, 32);
     std::shared_ptr<HittableList> world = std::make_shared<HittableList>();
 
     camera.verticalFov = 90.0f;
@@ -21,7 +21,7 @@ int main()
     camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
     std::shared_ptr<Material> mat1 = std::make_shared<Material>(Vector(1.0f, 0.0f, 0.0f), Vector(1.0f, 1.0f, 1.0f), 50.0f, MaterialType::Reflective);
-    std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 1.0f), Vector(0.0f, 0.0f, 1.0f), 5.0f, MaterialType::Refractive, 1.6f);
+    std::shared_ptr<Material> mat2 = std::make_shared<Material>(Vector(0.0f, 0.0f, 1.0f), Vector(0.0f, 0.0f, 1.0f), 5.0f, MaterialType::Refractive, 1.52f);
     std::shared_ptr<Material> mat3 = std::make_shared<Material>(Vector(0.0f, 5.0f, 0.0f), Vector(0.0f, 5.0f, 0.0f), 50.0f);
     std::shared_ptr<Material> matWallWhite = std::make_shared<Material>(Vector(1.0f, 1.0f, 1.0f), Vector(1.5f, 1.5f, 1.5f), 50.0f);
     std::shared_ptr<Material> matWallRed = std::make_shared<Material>(Vector(1.0f, 0.0f, 0.0f), Vector(0.005f, 0.005f, 0.005f), 5.0f);
@@ -32,7 +32,7 @@ int main()
     std::shared_ptr<Plane> plane3 = std::make_shared<Plane>(Vector(0.0f, -4.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), matWallWhite);
     std::shared_ptr<Plane> plane4 = std::make_shared<Plane>(Vector(-4.0f, 0.0f, 0.0f), Vector(1.0f, 0.0f, 0.0f), matWallRed);
     std::shared_ptr<Plane> plane5 = std::make_shared<Plane>(Vector(4.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f), matWallBlue);
-    std::shared_ptr<Plane> plane6 = std::make_shared<Plane>(Vector(0.0f, 0.0f, 8.1f), Vector(0.0f, 0.0f, -1.0f), matWallBlue);
+    std::shared_ptr<Plane> plane6 = std::make_shared<Plane>(Vector(0.0f, 0.0f, 8.1f), Vector(0.0f, 0.0f, -1.0f), matWallWhite);
 
     std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-1.1f, 0.0f, 2.3f), 1.4f, mat1);
     std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(1.25f, -0.5f, 5.25f), 0.8f, mat2);
@@ -46,6 +46,7 @@ int main()
     world->addToWorld(plane3);
     world->addToWorld(plane4);
     world->addToWorld(plane5);
+    // world->addToWorld(plane6);
 
     lights.push_back(std::make_shared<PointLight>(Vector(-3.0f, 3.5f, 3.0f), Vector(0.5f, 0.5f, 0.5f), Vector(0.5f, 0.5f, 0.5f)));
     lights.push_back(std::make_shared<PointLight>(Vector(3.0f, 3.5f, 3.0f), Vector(0.5f, 0.5f, 0.5f), Vector(0.5f, 0.5f, 0.5f)));
