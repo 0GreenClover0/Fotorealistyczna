@@ -173,6 +173,7 @@
     <ClCompile Include="..\include\Hittable.h" />
     <ClInclude Include="..\include\Global.h" />
     <ClInclude Include="..\include\HittableList.h" />
+    <ClInclude Include="..\include\Importer.h" />
     <ClInclude Include="..\include\Interval.h" />
     <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Line.h" />

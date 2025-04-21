@@ -1,14 +1,23 @@
 ﻿#include "Camera.h"
 
 #include "Global.h"
+#include "Material.h"
 #include "MathHelpers.h"
+
+#include <execution>
+#include <iostream>
+#include <ranges>
+#include <vector>
 
 void Camera::render(const std::shared_ptr<HittableList>& world)
 {
     initialize();
 
-    for (int y = 0; y < bitmap->height; y++)
+    auto range = std::views::iota(0, bitmap->height);
+
+    std::for_each(std::execution::par_unseq, range.begin(), range.end(), [&](int const y)
     {
+        std::cout << y << "\n";
         for (int x = 0; x < bitmap->width; x++)
         {
             Vector pixelColor = {};
@@ -21,7 +30,7 @@ void Camera::render(const std::shared_ptr<HittableList>& world)
 
             bitmap->data[y][x] = pixelSamplesScale * pixelColor;
         }
-    }
+    });
 }
 
 void Camera::initialize()
@@ -59,111 +68,34 @@ void Camera::initialize()
 
 Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
 {
-    Vector viewDirection = -ray.direction;
-    HitResult hitResult = { .hittable = nullptr, .hitPoint = Vector::invalid(), .t = 0.0f };
-    world->hit(ray, Interval(0.0f, FLT_MAX), hitResult);
-
-    if (hitResult.hitPoint.isInvalid())
-    {
-        return backgroundColor;
-    }
-
+    // If we've exceeded the ray bounce limit, no more light is gathered.
     if (depth <= 0)
     {
         return { 0.0f, 0.0f, 0.0f };
     }
 
-    if (hitResult.hittable->getMaterial()->materialType == MaterialType::Reflective)
+    Vector viewDirection = -ray.direction;
+    HitResult hitResult = HitResult();
+    world->hit(ray, Interval(0.001f, std::numeric_limits<float>::max()), hitResult);
+
+    // If the ray hits nothing, return the background color.
+    if (hitResult.point.isInvalid())
     {
-        Vector const normal = hitResult.hittable->getNormal(hitResult.hitPoint);
-        Vector const newDirection = ray.direction - 2.0f * normal * normal.dot(ray.direction);
-        Ray const reflectedRay = { hitResult.hitPoint + normal * 0.0001f, newDirection };
-        return rayGetColor(reflectedRay, depth - 1, world);
+        return backgroundColor;
     }
 
-    // if (hitResult.hittable->getMaterial()->materialType == MaterialType::Refractive)
-    // {
-    //     Vector const normal = hitResult.hittable->getNormal(hitResult.hitPoint);
-    //     Vector const unitDir = ray.direction.normalize();
-    //
-    //     bool entering = unitDir.dot(normal) < 0.0f;
-    //     Vector n = entering ? normal : normal.negative();
-    //
-    //     float etai = entering ? 1.0f : ray.currentMaterial->ior;
-    //     float etat = entering ? ray.currentMaterial->ior : 1.0f;
-    //     float eta = etai / etat;
-    //
-    //     float cos_theta = std::fmin(unitDir.negative().dot(n), 1.0f);
-    //
-    //     Vector r_out_perp = eta * (unitDir + cos_theta * n);
-    //     Vector r_out_parallel = -std::sqrt(std::fabs(1.0f - r_out_perp.lengthSquared())) * n;
-    //     Vector refracted = r_out_perp + r_out_parallel;
-    //
-    //     Ray refractedRay = {
-    //         hitResult.hitPoint - n * 0.0001f,
-    //         refracted.normalize(),
-    //         hitResult.hittable->getMaterial()
-    //     };
-    //
-    //     return rayGetColor(refractedRay, depth - 1, world);
-    // }
+    Ray scatteredRay;
+    Vector attenuation;
+    Vector emitted_color = hitResult.material->emitted(0.f, 0.f, {});
 
-    if (hitResult.hittable->getMaterial()->materialType == MaterialType::Refractive)
+    if (!hitResult.material->scatter(ray, hitResult, attenuation, scatteredRay))
     {
-        Vector const n = hitResult.hittable->getNormal(hitResult.hitPoint);
-
-        float cos_theta = -ray.direction.negative().dot(n);
-        float refr_ratio = 1.0f / hitResult.hittable->getMaterial()->ior;
-        float k = 1.0f - refr_ratio * refr_ratio * (1.0f - cos_theta * cos_theta);
-
-        Vector refractedDir = ray.direction * refr_ratio + (refr_ratio * cos_theta - sqrt(k)) * n;
-
-        Ray refractedRay = {
-                    hitResult.hitPoint + refractedDir * 0.0001f,
-                    refractedDir,
-                    hitResult.hittable->getMaterial()
-        };
-
-        return rayGetColor(refractedRay, depth - 1, world);
+        return emitted_color;
     }
 
-    Vector lightColor = { 0.0f, 0.0f, 0.0f };
-    Vector normal = hitResult.hittable->getNormal(hitResult.hitPoint);
+    Vector const scattered_color = attenuation * rayGetColor(scatteredRay, depth - 1, world);
 
-    for (auto const& light : lights)
-    {
-        // Send shadow ray to the light to check if it is occluded
-        HitResult lightResult = { .hittable = nullptr, .hitPoint = Vector::invalid(), .t = 0.0f };
-
-        Vector lightDirection = light->position - hitResult.hitPoint;
-        float distanceSquared = lightDirection.lengthSquared();
-        float distance = std::sqrt(distanceSquared);
-        lightDirection = lightDirection.normalize();
-
-        Ray shadowRay = Ray(hitResult.hitPoint + lightDirection * 0.0001f, lightDirection);
-        world->hit(shadowRay, Interval(0.0f, distance), lightResult);
-
-        if (!lightResult.hitPoint.isInvalid())
-        {
-            continue;
-        }
-
-        // Calculate light influence, Phong model
-        float diff = std::fmax(normal.dot(lightDirection), 0.0f);
-        Vector diffuse = diff * light->diffuse * hitResult.hittable->getMaterial()->diffuse;
-
-        Vector halfwayDirection = (lightDirection + viewDirection).normalize();
-        float spec = std::powf(std::fmax(normal.dot(halfwayDirection), 0.0f), hitResult.hittable->getMaterial()->shininess);
-        Vector specular = spec * light->specular * hitResult.hittable->getMaterial()->specular;
-
-        float attenuation = 1.0f / (light->constant + light->linear * distance + light->quadratic * distanceSquared);
-
-        lightColor += (diffuse + specular) * attenuation;
-    }
-
-    Vector hitColor = lightColor + ambientColor;
-
-    return hitColor;
+    return scattered_color + emitted_color;
 }
 
 Ray Camera::getRay(int x, int y) const

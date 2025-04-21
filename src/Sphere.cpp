@@ -46,8 +46,11 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 
     // Compute intersection point
 
-    hitResult.hitPoint = ray.origin + ray.direction * root;
+    hitResult.material = material;
+    hitResult.point = ray.origin + ray.direction * root;
     hitResult.t = root;
+    Vector outwardNormal = (hitResult.point - center) / radius;
+    hitResult.setFaceNormal(ray, outwardNormal);
 }
 
 Vector Sphere::getNormal(const Vector& hitPoint) const

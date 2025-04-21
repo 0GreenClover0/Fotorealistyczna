@@ -23,8 +23,10 @@ void Plane::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
         return;
     }
 
+    hitResult.material = material;
     hitResult.t = t;
-    hitResult.hitPoint = ray.origin + ray.direction * t;
+    hitResult.point = ray.origin + ray.direction * t;
+    hitResult.setFaceNormal(ray, normal);
 }
 
 Vector Plane::getNormal(const Vector& hitPoint) const

@@ -10,16 +10,19 @@ void HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 
     for (auto const& h : hittables)
     {
-        HitResult tempHitResult = {.hittable= nullptr, .hitPoint= Vector::invalid(), .t= 0.0f};
+        HitResult tempHitResult = HitResult();
         h->hit(ray, Interval(rayT.min, closestSoFar), tempHitResult);
 
-        if (tempHitResult.hitPoint.isInvalid())
+        if (tempHitResult.point.isInvalid())
         {
             continue;
         }
 
         hitResult.hittable = h;
-        hitResult.hitPoint = tempHitResult.hitPoint;
+        hitResult.material = tempHitResult.material;
+        hitResult.point = tempHitResult.point;
+        hitResult.normal = tempHitResult.normal;
+        hitResult.frontFace = tempHitResult.frontFace;
         closestSoFar = tempHitResult.t;
     }
 }
@@ -30,7 +33,7 @@ Vector HittableList::getNormal(const Vector& hitPoint) const
     return {};
 }
 
-void HittableList::addToWorld(std::shared_ptr<Hittable> const& hittable)
+void HittableList::add(std::shared_ptr<Hittable> const& hittable)
 {
     hittables.push_back(hittable);
 }

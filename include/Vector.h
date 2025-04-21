@@ -40,8 +40,12 @@ struct Vector
     float angle(Vector v) const;  // Returns angle between this vector and the passed vector - IN RADIANS
     static Vector invalid();      // Marks this vector as invalid if you need
     static Vector reflect(const Vector& incident, const Vector& normal);
+    static Vector refract(const Vector& uv, const Vector& n, float etai_over_etat);
     static Vector clamp(const Vector& v, float min, float max);
     bool isInvalid() const;
+    bool nearZero() const;
+    static Vector random_in_unit_sphere();
+    static Vector random_unit_vector();
 };
 
 inline Vector operator*(float lhs, const Vector& rhs)
@@ -51,8 +55,8 @@ inline Vector operator*(float lhs, const Vector& rhs)
 
 static float randomFloat(float const min, float const max)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(min, max);
-    return dis(gen);
+    return min + (rand() / ( RAND_MAX / (max - min) ) ) ;
+    // static std::mt19937 gen;
+    // static std::uniform_real_distribution<float> dis(min, max);
+    // return dis(gen);
 }
