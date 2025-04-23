@@ -46,6 +46,17 @@ struct Vector
     bool nearZero() const;
     static Vector random_in_unit_sphere();
     static Vector random_unit_vector();
+
+    float operator[](int const i) const
+    {
+        if (i == 0)
+            return x;
+
+        if (i == 1)
+            return y;
+
+        return z;
+    }
 };
 
 inline Vector operator*(float lhs, const Vector& rhs)

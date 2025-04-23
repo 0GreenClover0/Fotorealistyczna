@@ -2,6 +2,7 @@
 
 #include "HittableList.h"
 #include "Triangle.h"
+#include "Global.h"
 
 #include <array>
 #include <fstream>
@@ -61,10 +62,10 @@ static std::shared_ptr<HittableList> import(std::string const& path, std::shared
                 face_index += 1;
             }
 
-            model->add(std::make_shared<Triangle>(
+            Global::world->add(std::make_shared<Triangle>(
                     triangles[indices[0]],
-                    (triangles[indices[1]] - triangles[indices[0]]),
-                    (triangles[indices[2]] - triangles[indices[0]]),
+                    triangles[indices[1]],
+                    triangles[indices[2]],
                     material
                 )
             );

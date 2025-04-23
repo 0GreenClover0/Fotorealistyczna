@@ -4,9 +4,10 @@
 
 #include "MathHelpers.h"
 
-void HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
+bool HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
     float closestSoFar = rayT.max;
+    bool hitAny = false;
 
     for (auto const& h : hittables)
     {
@@ -24,7 +25,10 @@ void HittableList::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
         hitResult.normal = tempHitResult.normal;
         hitResult.frontFace = tempHitResult.frontFace;
         closestSoFar = tempHitResult.t;
+        hitAny = true;
     }
+
+    return hitAny;
 }
 
 Vector HittableList::getNormal(const Vector& hitPoint) const
@@ -36,4 +40,5 @@ Vector HittableList::getNormal(const Vector& hitPoint) const
 void HittableList::add(std::shared_ptr<Hittable> const& hittable)
 {
     hittables.push_back(hittable);
+    m_bbox = AABB(m_bbox, hittable->bounding_box());
 }

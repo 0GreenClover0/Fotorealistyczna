@@ -8,6 +8,7 @@
 #include "Sphere.h"
 #include <Windows.h>
 
+#include "BVHNode.h"
 #include "Importer.h"
 #include "Material.h"
 #include "Triangle.h"
@@ -17,8 +18,8 @@ int main()
 {
     srand(time(nullptr));
 
-    std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(256, 256);
-    Camera camera = Camera(bitmap, 200, 100);
+    std::shared_ptr<Bitmap> bitmap = std::make_shared<Bitmap>(420, 420);
+    Camera camera = Camera(bitmap, 200, 256);
     std::shared_ptr<HittableList> world = std::make_shared<HittableList>();
     Global::world = world;
 
@@ -28,7 +29,7 @@ int main()
     camera.vUp = Vector(0.0f, 1.0f, 0.0f);
 
     std::shared_ptr<Material> mat1 = std::make_shared<Reflective>();
-    std::shared_ptr<Material> mat2 = std::make_shared<Refractive>(1.35f);
+    std::shared_ptr<Material> mat2 = std::make_shared<Refractive>(Vector(0.3f, 0.3f, 0.1f), 1.35f);
     std::shared_ptr<Material> mat3 = std::make_shared<Phong>(Vector(0.0f, 0.5f, 0.0f), Vector(0.0f, 5.0f, 0.0f), 50.0f);
     std::shared_ptr<Material> matWallWhite = std::make_shared<Phong>(Vector(0.9f, 0.9f, 0.9f), Vector(1.5f, 1.5f, 1.5f), 50.0f);
     std::shared_ptr<Material> matWallRed = std::make_shared<Phong>(Vector(0.9f, 0.0f, 0.0f), Vector(0.005f, 0.005f, 0.005f), 5.0f);
@@ -42,20 +43,20 @@ int main()
     std::shared_ptr<Plane> plane5 = std::make_shared<Plane>(Vector(4.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f), matWallBlue);
     std::shared_ptr<Plane> plane6 = std::make_shared<Plane>(Vector(0.0f, 0.0f, 8.1f), Vector(0.0f, 0.0f, -1.0f), matWallBlue);
 
-    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-1.1f, 0.0f, 2.3f), 1.4f, mat1);
+    std::shared_ptr<Sphere> sphere1 = std::make_shared<Sphere>(Vector(-1.1f, -2.6f, 3.5f), 0.8f, mat1);
     std::shared_ptr<Sphere> sphere2 = std::make_shared<Sphere>(Vector(1.0f, -3.2f, 3.15f), 0.8f, mat2);
     std::shared_ptr<Sphere> sphere3 = std::make_shared<Sphere>(Vector(1.5f, 0.75f, 1.0f), 0.8, mat3);
     std::shared_ptr<Sphere> sphere4 = std::make_shared<Sphere>(Vector(-1.9f, -1.25f, 3.5f), 0.8, matWallWhite);
 
     std::shared_ptr<Triangle> triangle1 = std::make_shared<Triangle>(Vector(-3.0f, -1.0f, 2.0f), Vector(3.0f, -1.0f, 2.0f), Vector(0.0f, 3.0f, 2.0f), matWallRed);
 
-    std::shared_ptr<Sphere> sphereLight = std::make_shared<Sphere>(Vector(0.0f, 4.0f, 2.0f), 1.5, matDiffuseLight);
+    std::shared_ptr<Sphere> sphereLight = std::make_shared<Sphere>(Vector(0.0f, 4.5f, 2.0f), 1.5, matDiffuseLight);
 
-    auto obj = import("untitled.obj", matWallRed);
-    world->add(obj);
+    auto obj = import("untitled.obj", mat2);
+    //world->add(obj);
 
     //world->add(triangle1);
-    // world->addToWorld(sphere1);
+    world->add(sphere1);
     // world->addToWorld(sphere2);
     // world->addToWorld(sphere3);
     // world->addToWorld(sphere4);
@@ -72,7 +73,10 @@ int main()
     lights.push_back(std::make_shared<PointLight>(Vector(-3.0f, -3.5f, 3.0f), Vector(0.5f, 0.5f, 0.5f), Vector(0.5f, 0.5f, 0.5f)));
     lights.push_back(std::make_shared<PointLight>(Vector(3.0f, -3.5f, 3.0f), Vector(0.5f, 0.5f, 0.5f), Vector(0.5f, 0.5f, 0.5f)));
     camera.isOrthographic = false;
-    camera.render(world);
+
+    std::shared_ptr<BVHNode> root = std::make_shared<BVHNode>(world->hittables, 0, world->hittables.size());
+
+    camera.render(root);
 
     std::ofstream output("output.ppm");
     output << "P3\n" << bitmap->width << " " << bitmap->height << "\n255\n";

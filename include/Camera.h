@@ -8,6 +8,8 @@
 #include "Ray.h"
 #include "Vector.h"
 
+class BVHNode;
+
 class Camera
 {
 public:
@@ -29,11 +31,11 @@ public:
         aspectRatio = static_cast<float>(imageWidth) / static_cast<float>(imageHeight);
     }
 
-    void render(const std::shared_ptr<HittableList>& world);
+    void render(const std::shared_ptr<BVHNode>& root);
 
 private:
     void initialize();
-    Vector rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const;
+    Vector rayGetColor(const Ray& ray, int depth, const std::shared_ptr<BVHNode>& root) const;
     Ray getRay(int x, int y) const;
     Vector sampleSquare() const;
 

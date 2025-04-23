@@ -2,20 +2,20 @@
 
 #include "MathHelpers.h"
 
-void Triangle::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
+bool Triangle::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
     Vector normal = this->normal;
     float dot = normal.dot(ray.direction);
 
     // The ray and the triangle are coplanar. We treat it as NO intersection
     if (floatNearlyEqual(dot, 0.0f))
-        return;
+        return false;
 
     Vector ra = a - ray.origin;
     float t = normal.dot(ra) / dot;
 
     if (!rayT.surrounds(t))
-        return;
+        return false;
 
     Vector intersectionPoint = ray.origin + ray.direction * t;
 
@@ -29,7 +29,10 @@ void Triangle::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
         hitResult.point = intersectionPoint;
         hitResult.t = t;
         hitResult.setFaceNormal(ray, normal);
+        return true;
     }
+
+    return false;
 }
 
 Vector Triangle::getNormal(const Vector& hitPoint) const

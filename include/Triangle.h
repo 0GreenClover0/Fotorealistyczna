@@ -21,9 +21,19 @@ public:
         //normal = (c - a).cross(b - a).normalize();
 
         material = mat;
+
+        // m_q = a
+        // m_u = b - a
+        // m_v = c - a
+        // a, a + b - a + c - a = b + c - a
+        // a + b - a = b, a + c - a = c
+
+        auto const bbox_diagonal1 = AABB(a, b + c - a);
+        auto const bbox_diagonal2 = AABB(b, c);
+        m_bbox = AABB(bbox_diagonal1, bbox_diagonal2);
     }
 
-    virtual void hit(const Ray& ray, Interval rayT, HitResult& hitResult) override;
+    virtual bool hit(const Ray& ray, Interval rayT, HitResult& hitResult) override;
     virtual Vector getNormal(const Vector& hitPoint) const override;
 
     Vector a = { 0.0f, 0.0f, 0.0f };

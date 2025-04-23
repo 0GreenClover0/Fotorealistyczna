@@ -1,5 +1,6 @@
 ﻿#include "Camera.h"
 
+#include "BVHNode.h"
 #include "Global.h"
 #include "Material.h"
 #include "MathHelpers.h"
@@ -9,7 +10,7 @@
 #include <ranges>
 #include <vector>
 
-void Camera::render(const std::shared_ptr<HittableList>& world)
+void Camera::render(const std::shared_ptr<BVHNode>& root)
 {
     initialize();
 
@@ -25,7 +26,7 @@ void Camera::render(const std::shared_ptr<HittableList>& world)
             for (int i = 0; i < samplesPerPixel; i++)
             {
                 Ray ray = getRay(x, y);
-                pixelColor = pixelColor + rayGetColor(ray, maxDepth, world);
+                pixelColor = pixelColor + rayGetColor(ray, maxDepth, root);
             }
 
             bitmap->data[y][x] = pixelSamplesScale * pixelColor;
@@ -66,7 +67,7 @@ void Camera::initialize()
     }
 }
 
-Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<HittableList>& world) const
+Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<BVHNode>& root) const
 {
     // If we've exceeded the ray bounce limit, no more light is gathered.
     if (depth <= 0)
@@ -74,12 +75,12 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         return { 0.0f, 0.0f, 0.0f };
     }
 
-    Vector viewDirection = -ray.direction;
+    //Vector viewDirection = -ray.direction;
     HitResult hitResult = HitResult();
-    world->hit(ray, Interval(0.001f, std::numeric_limits<float>::max()), hitResult);
+    bool hit = root->hit(ray, Interval(0.001f, std::numeric_limits<float>::max()), hitResult);
 
     // If the ray hits nothing, return the background color.
-    if (hitResult.point.isInvalid())
+    if (!hit)
     {
         return backgroundColor;
     }
@@ -93,7 +94,7 @@ Vector Camera::rayGetColor(const Ray& ray, int depth, const std::shared_ptr<Hitt
         return emitted_color;
     }
 
-    Vector const scattered_color = attenuation * rayGetColor(scatteredRay, depth - 1, world);
+    Vector const scattered_color = attenuation * rayGetColor(scatteredRay, depth - 1, root);
 
     return scattered_color + emitted_color;
 }

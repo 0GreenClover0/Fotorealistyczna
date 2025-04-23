@@ -5,9 +5,12 @@
 Sphere::Sphere(const Vector& p, float radius, std::shared_ptr<Material> const& mat) : center(p), radius(radius)
 {
     material = mat;
+
+    auto radius_vec = Vector(radius, radius, radius);
+    m_bbox = AABB(center - radius_vec, center + radius_vec);
 }
 
-void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
+bool Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 {
     Vector originCenter = ray.origin - center;
     float a = ray.direction.lengthSquared();
@@ -18,7 +21,7 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 
     if (discriminant < 0.0f)
     {
-        return; // No intersection
+        return false; // No intersection
     }
 
     // Compute both possible intersection distances
@@ -29,7 +32,7 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
 
     if (!rayT.surrounds(root1) && !rayT.surrounds(root2))
     {
-        return;
+        return false;
     }
 
     // Ensure t1 is the smaller value
@@ -38,7 +41,7 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
     // If both intersections are behind the ray origin, return false
     if (root2 < 0)
     {
-        return;
+        return false;
     }
 
     // Choose the closest valid intersection
@@ -51,6 +54,7 @@ void Sphere::hit(const Ray& ray, Interval rayT, HitResult& hitResult)
     hitResult.t = root;
     Vector outwardNormal = (hitResult.point - center) / radius;
     hitResult.setFaceNormal(ray, outwardNormal);
+    return true;
 }
 
 Vector Sphere::getNormal(const Vector& hitPoint) const

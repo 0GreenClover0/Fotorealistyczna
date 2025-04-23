@@ -9,7 +9,7 @@ public:
     // Plane and normal
     Plane(const Vector& p, const Vector& normal, std::shared_ptr<Material> const& mat);
 
-    virtual void hit(const Ray& ray, Interval rayT, HitResult& hitResult) override;
+    virtual bool hit(const Ray& ray, Interval rayT, HitResult& hitResult) override;
     virtual Vector getNormal(const Vector& hitPoint) const override;
 
     Vector p = Vector(0, 0, 0);
