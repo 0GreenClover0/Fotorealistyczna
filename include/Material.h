@@ -110,11 +110,10 @@ public:
 class Refractive final : public Material
 {
 public:
-    explicit Refractive(float ior) : refractionIndex(ior) {}
+    Refractive(Vector const& absorptionColor, float ior) : absorptionColor(absorptionColor), refractionIndex(ior) {}
 
     virtual bool scatter(const Ray& ray_in, const HitResult& hitResult, Vector& attenuation, Ray& scattered) const override
     {
-        attenuation = Vector(1.0f, 1.0f, 1.0f);
         float ri = hitResult.frontFace ? (1.0f / refractionIndex) : refractionIndex;
 
         Vector normal = hitResult.normal;
@@ -129,29 +128,36 @@ public:
         if (cannot_refract || reflectance(cos_theta, ri) > randomFloat(0.0f, 1.0f))
         {
             direction = Vector::reflect(unit_direction, normal);
-        } else
+            attenuation = Vector(1.0f, 1.0f, 1.0f);
+        }
+        else
         {
             direction = Vector::refract(unit_direction, normal, ri);
+
+            // Beer's Law attenuation
+            if (!hitResult.frontFace)
+            {
+                float distance = hitResult.t;
+                Vector absorption = Vector(
+                    expf(-absorptionColor.x * distance),
+                    expf(-absorptionColor.y * distance),
+                    expf(-absorptionColor.z * distance)
+                );
+
+                attenuation = absorption;
+            }
+            else
+            {
+                attenuation = Vector(1.0f, 1.0f, 1.0f); // Entering the dielectric
+            }
         }
 
         scattered = Ray(hitResult.point, direction);
-        return true;
 
-        // attenuation = Vector(1.0f, 1.0f, 1.0f);
-        //
-        // Vector const n = hitResult.hittable->getNormal(hitResult.hitPoint);
-        //
-        // float cos_theta = -ray_in.direction.negative().dot(n);
-        // float refr_ratio = 1.0f / refractionIndex;
-        // float k = 1.0f - refr_ratio * refr_ratio * (1.0f - cos_theta * cos_theta);
-        //
-        // Vector refractedDir = ray_in.direction * refr_ratio + (refr_ratio * cos_theta - sqrt(k)) * n;
-        //
-        // scattered = Ray(hitResult.hitPoint + refractedDir * 0.0001f, refractedDir);
-        //
-        // return true;
+        return true;
     }
 
+    Vector absorptionColor = Vector(0.0f, 0.0f, 0.0f); // Beer's Law coefficient
     float refractionIndex = 1.0f;
 
 private:
